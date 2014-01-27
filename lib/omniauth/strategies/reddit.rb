@@ -27,8 +27,8 @@ module OmniAuth
 
       extra do
         {
-            'username' => raw_info['name'],
-            'subreddits' => { 'subscriber' => subscriber_subreddits, 'moderator' => moderator_subreddits }
+            'username' => raw_info['name']
+            #'subreddits' => { 'subscriber' => subscriber_subreddits, 'moderator' => moderator_subreddits }
         }
       end
 
