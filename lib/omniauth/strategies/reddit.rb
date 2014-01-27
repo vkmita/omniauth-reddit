@@ -37,11 +37,11 @@ module OmniAuth
       end
 
       def subscriber_subreddits
-        @subscriber_subreddits ||= access_token.get('/subreddits/mine/subscriber').parsed || {}
+        @subscriber_subreddits ||= sleep(0.5) && access_token.get('/subreddits/mine/subscriber').parsed || {}
       end
 
       def moderator_subreddits
-        @moderator_subreddits ||= access_token.get('/subreddits/mine/moderator').parsed || {}
+        @moderator_subreddits ||= sleep(0.5) && access_token.get('/subreddits/mine/moderator').parsed || {}
       end
 
       def raw_info
