@@ -1,52 +1,75 @@
 require 'omniauth/strategies/oauth2'
 require 'base64'
 require 'rack/utils'
+require 'oauth2/reddit_client'
 
 module OmniAuth
   module Strategies
     class Reddit < OmniAuth::Strategies::OAuth2
-      #class NoAuthorizationCodeError < StandardError; end
+      AUTHORIZATION_HOST = 'https://ssl.reddit.com'
+      AUTHORIZATION_PATH = '/api/v1/authorize'
+      ACCESS_TOKEN_PATH  = '/api/v1/access_token'
+
+      option :client_options, {
+        site: AUTHORIZATION_HOST,
+        authorize_url: AUTHORIZATION_HOST + AUTHORIZATION_PATH,
+        token_url: AUTHORIZATION_HOST + ACCESS_TOKEN_PATH
+      }
 
       option :name, "reddit"
       option :authorize_options, [:scope, :duration]
 
-      option :client_options, {
-        site: 'https://ssl.reddit.com',
-        authorize_url: 'https://ssl.reddit.com/api/v1/authorize',
-        token_url: 'https://ssl.reddit.com/api/v1/access_token'
-      }
-
-      uid { raw_info['id'] }
+      uid { api_v1_me['id'] }
 
       info do
         {
-          name: raw_info['name'],
-          email: raw_info['email']
+          name: api_v1_me['name'],
+          email: api_v1_me['email']
         }
       end
 
       extra do
         {
-            'username' => username
-            #'subreddits' => { 'subscriber' => subscriber_subreddits, 'moderator' => moderator_subreddits }
+          :username => username,
+          :email => email,
+          :subreddits => {
+            :subscriber => subscribed_subreddits,
+            :moderator => moderated_subreddits
+          }
         }
       end
 
+      def client
+        ::OAuth2::RedditClient.new(options.client_id, options.client_secret, deep_symbolize(options.client_options))
+      end
+
       def username
-        @username ||= raw_info['name']
+        @username ||= api_v1_me['name']
       end
 
-      def subscriber_subreddits
-        @subscriber_subreddits ||= sleep(0.5) && access_token.get('/subreddits/mine/subscriber').parsed || {}
+      def email
+        @email ||= api_v1_me['email']
       end
 
-      def moderator_subreddits
-        @moderator_subreddits ||= sleep(0.5) && access_token.get('/subreddits/mine/moderator').parsed || {}
+      def subscribed_subreddits
+
       end
 
-      def raw_info
-        @raw_info ||= access_token.get('/api/v1/me').parsed || {}
+      def moderated_subreddits
       end
+
+      def api_v1_me
+        @api_v1_me ||= access_token.get('/api/v1/me').parsed || {}
+      end
+
+      def subreddits_mine_moderator
+        @subreddits_mine_moderator ||= access_token.get('/subreddits/mine/moderator').parsed || {}
+      end
+
+      def subreddits_mine_subscriber
+        @subreddits_mine_subscriber ||= access_token.get('/subreddits/mine/subscriber').parsed || {}
+      end
+
 
       def build_access_token
         options.token_params.merge!(:headers => {'Authorization' => basic_auth_header })
@@ -54,7 +77,7 @@ module OmniAuth
       end
 
       def basic_auth_header
-        "Basic " + Base64.strict_encode64("#{options[:client_id]}:#{options[:client_secret]}")
+        "Basic #{Base64.strict_encode64("#{options[:client_id]}:#{options[:client_secret]}")}"
       end
 
     end
