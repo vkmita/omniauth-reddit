@@ -1,7 +1,7 @@
 require 'omniauth/strategies/oauth2'
 require 'base64'
 require 'rack/utils'
-require 'oauth2/reddit_client'
+#require 'oauth2/reddit_client'
 
 module OmniAuth
   module Strategies
