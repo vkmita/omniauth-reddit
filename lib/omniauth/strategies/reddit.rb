@@ -31,11 +31,11 @@ module OmniAuth
       extra do
         {
           :username => username,
-          :email => email,
-          :subreddits => {
-            :subscribed => subreddits_mine_subscriber,
-            :moderated => subreddits_mine_moderator
-          }
+          :email => email
+          #:subreddits => {
+          #  :subscribed => subreddits_mine_subscriber,
+          #  :moderated => subreddits_mine_moderator
+          #}
         }
       end
 
