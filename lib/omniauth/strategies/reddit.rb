@@ -38,10 +38,10 @@ module OmniAuth
           #}
         }
       end
-
-      def client
-        ::OAuth2::RedditClient.new(options.client_id, options.client_secret, deep_symbolize(options.client_options))
-      end
+      #
+      #def client
+      #  ::OAuth2::RedditClient.new(options.client_id, options.client_secret, deep_symbolize(options.client_options))
+      #end
 
       def username
         @username ||= api_v1_me['name']
