@@ -8,7 +8,7 @@ module OAuth2
     def request(verb, url, opts = {})
       super
       sleep(0.5)
-      self.site = API_HOST if self.site == AUTHORIZATION_HOST
+      #self.site = API_HOST if self.site == AUTHORIZATION_HOST
     end
   end
 end
