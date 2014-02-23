@@ -33,8 +33,8 @@ module OmniAuth
           :username => username,
           :email => email,
           :subreddits => {
-            :subscriber => subscribed_subreddits,
-            :moderator => moderated_subreddits
+            :subscribed => subreddits_mine_subscriber,
+            :moderated => subreddits_mine_moderator
           }
         }
       end
@@ -49,13 +49,6 @@ module OmniAuth
 
       def email
         @email ||= api_v1_me['email']
-      end
-
-      def subscribed_subreddits
-
-      end
-
-      def moderated_subreddits
       end
 
       def api_v1_me
