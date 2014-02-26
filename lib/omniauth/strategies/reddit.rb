@@ -5,8 +5,6 @@ require 'rack/utils'
 module OmniAuth
   module Strategies
     class Reddit < OmniAuth::Strategies::OAuth2
-      #class NoAuthorizationCodeError < StandardError; end
-
       option :name, "reddit"
       option :authorize_options, [:scope, :duration]
 
@@ -28,7 +26,9 @@ module OmniAuth
         {'raw_info' => raw_info}
       end
       def raw_info
-        @raw_info ||= (access_token.get('/api/v1/me').parsed || {}).merge(access_token.get('/subreddits/mine/subscriber').parsed || {})
+        @raw_info ||= (access_token.get('/api/v1/me').parsed || {}).
+          merge!({'subscriber' => access_token.get('/subreddits/mine/subscriber').parsed[''] || {}}).
+          merge!({'moderator' => access_token.get('/subreddits/mine/moderator').parsed[''] || {}})
       end
 
       def build_access_token
