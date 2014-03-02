@@ -19,7 +19,8 @@ module OmniAuth
         {
           name: raw_info['name'],
           email: raw_info['email'],
-          subscriber: access_token.get('/subreddits/mine/subscriber').parsed || {}
+          subscriber: access_token.get('/subreddits/mine/subscriber').parsed || {},
+          moderator: access_token.get('/subreddits/mine/moderator').parsed || {}
         }
       end
 
